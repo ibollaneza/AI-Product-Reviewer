@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Product Reviewer</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        body {
+            font-family: 'VT323', monospace;
+            background-color: #000;
+            color: #00FF00;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .container {
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 20px;
+            border: 2px solid #00FF00;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 800px;
+            z-index: 10;
+            position: relative;
+            overflow-y: auto;
+            max-height: 80vh;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: 2px solid #00FF00;
+            background-color: #000;
+            color: #00FF00;
+            font-size: 1em;
+            width: calc(100% - 44px);
+        }
+
+        button {
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        button:hover {
+            background-color: #00FF00;
+            color: #000;
+        }
+
+        #reviewContainer {
+            margin-top: 20px;
+            text-align: left;
+            overflow-y: auto;
+        }
+
+        .review {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #00FF00;
+            border-radius: 5px;
+            background-color: #111;
+        }
+
+        .stars {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .stars span {
+            color: gold;
+            font-size: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Product Reviewer</h1>
+        <input type="text" id="productURL" placeholder="Enter product URL">
+        <button onclick="generateReviews()">Generate Reviews</button>
+        <div id="reviewContainer"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('productURL').addEventListener('keypress', event => {
+                if (event.key === 'Enter') {
+                    generateReviews();
+                }
+            });
+        });
+
+        function generateReviews() {
+            const productURL = document.getElementById('productURL').value;
+            if (!productURL) {
+                alert('Please enter a product URL.');
+                return;
+            }
+
+            const reviews = fetchReviews();
+            const reviewContainer = document.getElementById('reviewContainer');
+            reviewContainer.innerHTML = `<h2>Reviews for ${productURL}</h2>`;
+
+            reviews.forEach(review => {
+                const reviewElement = document.createElement('div');
+                reviewElement.className = 'review';
+                
+                const starsElement = document.createElement('div');
+                starsElement.className = 'stars';
+                starsElement.innerHTML = `${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}`;
+                
+                const textElement = document.createElement('p');
+                textElement.innerText = review.text;
+                
+                reviewElement.appendChild(starsElement);
+                reviewElement.appendChild(textElement);
+                
+                reviewContainer.appendChild(reviewElement);
+            });
+        }
+
+        function fetchReviews() {
+            const reviewTexts = [
+                "This product is absolutely amazing! It surpassed my expectations in every way. The quality is top-notch, and the performance is outstanding. I've been using it for a month now, and I couldn't be happier. Highly recommended!",
+                "Very good product with solid build quality. The price is a bit high, but you get what you pay for. The performance is great, and it works perfectly for my needs. I would definitely buy it again.",
+                "I'm not satisfied with this product. It broke after a week of use, and the performance was below average. I was expecting more based on the reviews I read. Would not recommend.",
+                "Excellent product! It works like a charm and has all the features I need. The customer service was also very helpful when I had questions. Worth every penny.",
+                "The product is okay. It does what it is supposed to do, but there are better options available on the market. The build quality could be improved, and the performance is just average.",
+                "Great value for money. This product offers a lot of features at a reasonable price. I've been using it for a few months now, and so far, it has been very reliable.",
+                "Not what I expected. The product didn't work as advertised and the quality was subpar. I had to return it after a few days of use.",
+                "Fantastic product! It exceeded my expectations in every way. The build quality is excellent, and it performs flawlessly. I highly recommend it to everyone.",
+                "It's decent, but I've seen better. The product works okay, but there are better alternatives available that offer more features and better performance.",
+                "Absolutely love it! The product is everything I hoped for and more. It works perfectly and has made my life so much easier. Five stars!"
+            ];
+
+            const reviews = [];
+            for (let i = 0; i < 5; i++) {
+                const randomIndex = Math.floor(Math.random() * reviewTexts.length);
+                const randomRating = Math.floor(Math.random() * 5) + 1;
+                reviews.push({
+                    rating: randomRating,
+                    text: reviewTexts[randomIndex]
+                });
+            }
+            return reviews;
+        }
+    </script>
+</body>
+</html>
